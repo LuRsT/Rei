@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block title %}Delete Invoice #{{ invoice.id }}{% endblock %}
+{% block body %}
+<h2>Delete invoice {{ invoice.store }} / {{ invoice.value }}</h2>
+  <form action="" method=post>
+    <p>Are you sure you want to delete the invoice?  You cannot undo this.
+    <p>
+      <input class="btn btn-success" type=submit name=yes value=Yes>
+      <input class="btn btn-danger" type=submit name=no value=No>
+  </form>
+{% endblock %}
