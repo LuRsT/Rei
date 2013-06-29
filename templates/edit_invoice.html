@@ -8,26 +8,13 @@
             <input type="text" name="store" placeholder="Store" value="{{ invoice.store }}" />
         </p>
         <p>
-            <input type="datetime" id="datepicker" name="date" placeholder="" value="{{ invoice.date.strftime('%y/%m/%d') }}"/></p>
+            <input type="date" class="datepicker" name="date" placeholder="" value="{{ invoice.date.strftime('%y/%m/%d') }}"/></p>
         <p>
-            <input type="text" name="value" placeholder="1337.00" value="{{ invoice.value }}" /> £
+            <input type="text" name="value" placeholder="1337.00" value="{{ invoice.value }}" /> {{ config.CURRENCY|safe }}
         </p>
         <p>
             <input type=submit value="Edit" class="btn btn-inverse">
         </p>
     </form>
 
-{% endblock %}
-
-{% block extra_js %}
-    <script>
-        $(document).ready(function() {
-            $(function(){
-                $.datepicker.setDefaults(
-                    $.extend($.datepicker.regional['gb'])
-                );
-                $('#datepicker').datepicker({dateFormat: "y/mm/dd"});
-            });
-        });
-    </script>
 {% endblock %}

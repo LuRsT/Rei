@@ -7,7 +7,7 @@ from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
-from flask import session
+#from flask import session
 from flask import url_for
 
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -44,7 +44,10 @@ def new_invoice():
         db.session.add(invoice)
         db.session.commit()
         return redirect(url_for('invoices'))
-    return render_template('new_invoice.html')
+    return render_template(
+        'new_invoice.html',
+        default_date=date.today().strftime("%y/%m/%d")
+        )
 
 
 @app.route('/<int:invoice_id>/edit', methods=['GET', 'POST'])
@@ -80,18 +83,26 @@ def delete_invoice(invoice_id):
 
 
 @app.route('/', defaults={
-    'date_from': date.today(),
+    'date_from': date.today() - timedelta(days=30),
     'date_to': date.today() + timedelta(days=1),
     'page': 1,
     })
 @app.route('/<string:date_from>/<string:date_to>/', defaults={'page': 1})
 @app.route('/<string:date_from>/<string:date_to>/page/<int:page>')
 def invoices(date_from, date_to, page):
-    pagination = Invoice.query.filter(Invoice.date.between(date_from, date_to)).paginate(page)
+    pagination = Invoice.query \
+        .filter(Invoice.date.between(date_from, date_to)) \
+        .order_by('date') \
+        .paginate(page)
+    total = 0
+    for invoice in pagination.items:
+        total += invoice.value
+
     return render_template(
         'invoices.html',
         date_from=date_from,
         date_to=date_to,
-        pagination=pagination
+        pagination=pagination,
+        total=total,
         )
 

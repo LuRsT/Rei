@@ -7,26 +7,13 @@
             <input type="text" name="store" placeholder="Store" />
         </p>
         <p>
-            <input type="datetime" id="datepicker" name="date" placeholder="" /></p>
+            <input type="datetime" class="datepicker" name="date" value={{ default_date }} /></p>
         <p>
-            <input type="text" name="value" placeholder="1337.00" /> £
+            <input type="text" name="value" placeholder="1337.00" /> {{ config.CURRENCY|safe }}
         </p>
         <p>
             <input type=submit value="Create" class="btn btn-inverse">
         </p>
     </form>
 
-{% endblock %}
-
-{% block extra_js %}
-    <script>
-        $(document).ready(function() {
-            $(function(){
-                $.datepicker.setDefaults(
-                    $.extend($.datepicker.regional['gb'])
-                );
-                $('#datepicker').datepicker({dateFormat: "y/mm/dd"});
-            });
-        });
-    </script>
 {% endblock %}
