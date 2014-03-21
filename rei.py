@@ -7,7 +7,6 @@ from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
-#from flask import session
 from flask import url_for
 
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -32,34 +31,37 @@ class Invoice(db.Model):
 
 @app.route('/new', methods=['GET', 'POST'])
 def new_invoice():
-    if request.method == 'POST'  \
-        and request.form['store'] \
-        and request.form['date']   \
-        and request.form['value']:
+    if request.method == 'POST' \
+            and request.form['store'] \
+            and request.form['date'] \
+            and request.form['value']:
         invoice = Invoice(
             request.form['store'],
             datetime.strptime(request.form['date'], "%y/%m/%d"),
             request.form['value'],
-            )
+        )
         db.session.add(invoice)
         db.session.commit()
         return redirect(url_for('invoices'))
+
     return render_template(
         'new_invoice.html',
         default_date=date.today().strftime("%y/%m/%d")
-        )
+    )
 
 
 @app.route('/<int:invoice_id>/edit', methods=['GET', 'POST'])
 def edit_invoice(invoice_id):
     invoice_to_edit = Invoice.query.get_or_404(invoice_id)
-    if request.method == 'POST'  \
-        and request.form['store'] \
-        and request.form['date']   \
-        and request.form['value']:
-
+    if request.method == 'POST' \
+            and request.form['store'] \
+            and request.form['date'] \
+            and request.form['value']:
         invoice_to_edit.store = request.form['store']
-        invoice_to_edit.date = datetime.strptime(request.form['date'], "%y/%m/%d")
+        invoice_to_edit.date = datetime.strptime(
+            request.form['date'],
+            "%y/%m/%d",
+        )
         invoice_to_edit.value = request.form['value']
         db.session.add(invoice_to_edit)
         db.session.commit()
@@ -86,7 +88,7 @@ def delete_invoice(invoice_id):
     'date_from': date.today() - timedelta(days=30),
     'date_to': date.today() + timedelta(days=1),
     'page': 1,
-    })
+})
 @app.route('/<string:date_from>/<string:date_to>/', defaults={'page': 1})
 @app.route('/<string:date_from>/<string:date_to>/page/<int:page>')
 def invoices(date_from, date_to, page):
@@ -104,7 +106,7 @@ def invoices(date_from, date_to, page):
         date_to=date_to,
         pagination=pagination,
         total=total,
-        )
+    )
 
 
 def url_for_other_page(page):
@@ -112,5 +114,3 @@ def url_for_other_page(page):
     args['page'] = page
     return url_for(request.endpoint, **args)
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
-
-
